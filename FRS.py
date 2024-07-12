@@ -8,25 +8,25 @@ import cv2
 import os
 from scipy.spatial.distance import cosine
 
-# Cargar el modelo VGGFace preentrenado sin la capa superior
-vgg_model = VGGFace(include_top=False, input_shape=(224, 224, 3), pooling='avg')
+# loading only feature extractor layers (chekear documentacion: https://github.com/rcmalli/keras-vggface)
+vgg_model = VGGFace(include_top=False, input_shape=(224, 224, 3), pooling='avg') #pooling: max, avg, min
 
-# Cargar el clasificador de rostros de OpenCV
+# cv Face Detection
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-# Función para preprocesar las imágenes
+# Pretraining model function with our faces on our directories
 def preprocess_image(img):
     img = cv2.resize(img, (224, 224)).astype('float32')
     img = np.expand_dims(img, axis=0)
-    img = utils.preprocess_input(img, version=1)  # version=1 for VGGFace1, version=2 for VGGFace2
+    img = utils.preprocess_input(img, version=1)  # version=1 for VGGFace1, version=2 for VGGFace2, !!Versino 1 for VGG16, Version 2 for RESNET AND SENET!!
     return img
 
-# Función para extraer características utilizando VGGFace
+# feature extraction using vgg model from the image
 def extract_features(model, img):
     features = model.predict(img)
-    return features.flatten()  # Aplanar las características a 1-D
+    return features.flatten()  # 1D flatterend
 
-# Función para cargar las características de imágenes conocidas
+# Got help formm chatGPT on this one, check full function again | Load person and known features
 def load_known_features(known_images_dir):
     known_features = {}
     for person in os.listdir(known_images_dir):
@@ -40,7 +40,7 @@ def load_known_features(known_images_dir):
             known_features[person] = features_list
     return known_features
 
-# Función para verificar si la persona es conocida y clasificarla
+# Check and label person
 def classify_person(webcam_features, known_features, similarity_threshold=0.65):
     min_distance = float('inf')
     best_match = None
@@ -53,19 +53,20 @@ def classify_person(webcam_features, known_features, similarity_threshold=0.65):
     known_person = min_distance < (1 - similarity_threshold)
     return known_person, best_match, min_distance
 
-# Función para actualizar las características de una persona conocida
+# Updating features
 def update_known_features(known_features, person, new_features):
     known_features[person].append(new_features)
 
-# Cargar características de imágenes conocidas
-known_images_dir = '/home/mili/Desktop/RealFaceRe/known'
+# Load known images features
+known_images_dir = '/home/mili/Desktop/FRTest/FRVGG/known'
 known_features = load_known_features(known_images_dir)
 
-# Capturar video de la webcam
+# Webcam function
 cap = cv2.VideoCapture(0)
 if not cap.isOpened():
     print("No se pudo abrir la webcam.")
     exit()
+
 
 while True:
     ret, frame = cap.read()
@@ -74,7 +75,7 @@ while True:
         break
 
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.1, minNeighbors=8, minSize=(30, 30))
 
     for (x, y, w, h) in faces:
         face_img = frame[y:y+h, x:x+w]
@@ -85,21 +86,22 @@ while True:
         label = "Unknown"
         percentage = (1 - min_distance) * 100
         
-        if known and percentage > 71:
+        #Check if i know him, known if percentage is >65, update feaures with captured image if percentage is >80
+        if known and percentage > 65:
             label = f'{person} ({percentage:.2f}%)'
-            if percentage > 75:
+            if percentage > 80:
                 update_known_features(known_features, person, face_features)
         else:
             label = f'Unknown ({percentage:.2f}%)'
 
-        # Dibujar el rectángulo alrededor del rostro y agregar la etiqueta
+        # Rectangle
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0) if known else (0, 0, 255), 2)
         cv2.putText(frame, label, (x, y-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0) if known else (0, 0, 255), 2)
 
     cv2.imshow('Webcam', frame)
 
-    # Espera a que se presione la tecla 'q' para salir
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord('q') or key == 27:
         break
 
 cap.release()
