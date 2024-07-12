@@ -1,0 +1,70 @@
+Code by Alejandro Milikowsky
+https://github.com/Mili4Matic/
+
+Instructions for Setting Up the Face Recognition Program
+--------------------------------------------------------
+
+1. **Download and Install Miniconda**:
+   - Go to the Miniconda download page: https://docs.conda.io/en/latest/miniconda.html
+   - Download the installer for your operating system.
+   - Follow the installation instructions for Miniconda.
+
+2. **Create a New Conda Environment**:
+   - Open your terminal (or Anaconda Prompt on Windows).
+   - Create a new environment named `face_recog` with Python 3.8.19:
+     ```
+     conda create -n face_recog python=3.8.19
+     ```
+   - Activate the new environment:
+     ```
+     conda activate face_recog
+     ```
+
+3. **Download the Repository from GitHub**:
+   - Clone the repository containing the program and requirements:
+     ```
+     git clone https://github.com/Mili4Matic/FRVGG.git
+     ```
+   - Navigate to the cloned repository:
+     ```
+     cd FRVGG
+     ```
+
+4. **Install Required Packages**:
+   - Install the required dependencies using pip:
+     ```
+     pip install -r requirements.txt
+     ```
+
+5. **Prepare the Known Faces Directory**:
+   - Create a directory for known faces. The structure should be:
+     ```
+     /path/to/known/
+     ├── person1/
+     │   ├── image1.jpg
+     │   ├── image2.jpg
+     │   └── ...
+     ├── person2/
+     │   ├── image1.jpg
+     │   ├── image2.png
+     │   └── ...
+     └── ...
+     ```
+   - Place images of known individuals in their respective directories.
+
+6. **Run the Program**:
+   - Ensure your webcam is connected.
+   - Navigate to the directory containing the Python script if you are not already there:
+     ```
+     cd FRVGG
+     ```
+   - Run the script:
+     ```
+     python FRS.py
+     ```
+   - The program will open a window showing the webcam feed. It will attempt to recognize known faces and label them accordingly.
+
+7. **Close the Program**:
+   - To close the program, press 'q' or the 'Esc' key.
+
+That's it! You've set up and run the face recognition program. If you encounter any issues, ensure all dependencies are correctly installed and the directory structure is properly organized.
