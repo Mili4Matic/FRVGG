@@ -1,2 +1,39 @@
-# Auto detect text files and perform LF normalization
+# Handle line endings automatically for text files
 * text=auto
+
+# Explicitly declare text files you want to always normalize line endings
+*.c text
+*.h text
+*.cpp text
+*.py text
+*.java text
+*.txt text
+
+# Denote all the image files as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.bmp binary
+
+# Handle Jupyter Notebook files
+*.ipynb text
+
+# Ensure JSON files are treated as text
+*.json text
+
+# Ensure YAML files are treated as text
+*.yaml text
+*.yml text
+
+# Ensure XML files are treated as text
+*.xml text
+
+# Ensure Markdown files are treated as text
+*.md text
+
+# Custom merge driver for certain file types (if needed)
+#*.ext merge=custom_driver
+
+# Specific settings for certain paths (if needed)
+#path/to/file text
