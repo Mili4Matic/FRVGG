@@ -9,7 +9,7 @@
 # while marking unknown faces. The program also updates the known features 
 # with new captures if the recognition confidence is high.
 #
-# Directory Structure for Known Faces:
+# Directory Structure for Known Faces: (Change on line 87)
 # The known directory should contain subdirectories named after known individuals.
 # Each subdirectory should contain images of the person.
 # Example:
