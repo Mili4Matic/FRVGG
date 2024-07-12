@@ -57,9 +57,27 @@ def classify_person(webcam_features, known_features, similarity_threshold=0.65):
 def update_known_features(known_features, person, new_features):
     known_features[person].append(new_features)
 
+
+
 # Load known images features
+# Directory Structure for Known Faces:
+# The known directory should contain subdirectories named after known individuals.
+# Each subdirectory should contain images of the person.
+# Example:
+# /home/mili/Desktop/FRTest/FRVGG/known/
+# ├── person1/
+# │   ├── image1.jpg
+# │   ├── image2.jpg
+# │   └── ...
+# ├── person2/
+# │   ├── image1.jpg
+# │   ├── image2.png
+# │   └── ...
+# └── ...
 known_images_dir = '/home/mili/Desktop/FRTest/FRVGG/known'
 known_features = load_known_features(known_images_dir)
+
+
 
 # Webcam function
 cap = cv2.VideoCapture(0)
